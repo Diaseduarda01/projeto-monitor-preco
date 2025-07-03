@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/style-signup.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <title>Monitor de Preços | Cadastrar</title>
+</head>
+
+<body>
+    <div onload="listar()" class="container">
+        <div class="form signup">
+            <span class="title">Cadastre-se</span>
+            <form action="#">
+                <div class="input-field">
+                    <input id="nome_input" type="text" placeholder="Insira seu Nome" required />
+                    <i class="uil uil-user"></i>
+                </div>
+                <div class="input-field">
+                    <input id="email_cadastro_input" type="text" placeholder="Insira seu Email" required />
+                    <i class="uil uil-envelope icon"></i>
+                </div>
+                <div class="input-field">
+                    <input id="senha_cadastro_input" class="password" type="password" placeholder="Insira uma Senha" required />
+                    <i class="uil uil-lock icon"></i>
+                    <i class="uil uil-eye-slash showHidePw"></i>
+                </div>
+                <div class="checkbox-text">
+                    <div class="checkbox-content">
+                        <input type="checkbox" id="signupCheck" />
+                        <label for="signupCheck" class="text">Aceito todos os termos e condições</label>
+                    </div>
+                </div>
+                <div class="input-field button">
+                    <button class="botao" type="button" onclick="cadastrar(event)">Cadastrar</button>
+                </div>
+            </form>
+            <div class="login-signup">
+                <span class="text">Já tem uma conta? <a href="entrar.html" class="text login-link">Faça Login Agora</a></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

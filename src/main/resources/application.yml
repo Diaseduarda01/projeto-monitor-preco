@@ -1,0 +1,34 @@
+server:
+  servlet:
+    context-path: /api
+  port: ${SERVER_PORT:8004}
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on-param
+    include-exception: false
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: monitor-preco-api
+
+  security:
+    user:
+      name: admin
+      password: admin123
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:monitor_preco}
+    username: ${DB_USER:root}
+    password: ${DB_PASS:dudadias}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+      jdbc:
+        time_zone: UTC

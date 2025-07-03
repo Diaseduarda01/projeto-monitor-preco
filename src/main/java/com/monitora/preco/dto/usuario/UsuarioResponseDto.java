@@ -1,0 +1,18 @@
+package com.monitora.preco.dto.usuario;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class UsuarioResponseDto {
+
+    private Integer id;
+    private String nome;
+    private String email;
+    private String senha;
+}

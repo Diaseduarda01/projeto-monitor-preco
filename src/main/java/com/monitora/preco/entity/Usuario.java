@@ -17,4 +17,8 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
+
+    @OneToOne
+    @JoinColumn(name = "role_id", unique = true)
+    private Role role;
 }

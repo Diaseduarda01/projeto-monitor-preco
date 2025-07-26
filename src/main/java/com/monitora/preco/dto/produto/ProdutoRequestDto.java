@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.math.BigDecimal;
+
 public record ProdutoRequestDto (
 
         @NotBlank
@@ -12,8 +14,11 @@ public record ProdutoRequestDto (
         @NotBlank
          String url,
 
+        @NotBlank
+        String classe,
+
         @NotNull
-         Double precoDesejado,
+        BigDecimal precoDesejado,
 
         @NotBlank
          Boolean ativo,

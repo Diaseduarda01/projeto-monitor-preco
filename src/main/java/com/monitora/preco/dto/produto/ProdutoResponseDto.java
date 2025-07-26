@@ -1,12 +1,14 @@
 package com.monitora.preco.dto.produto;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public record ProdutoResponseDto (
         Integer id,
         String nome,
         String url,
-        Double precoDesejado,
+        String classe,
+        BigDecimal precoDesejado,
         Boolean ativo,
         UsuarioResponse usuario
 ){

@@ -1,9 +1,10 @@
 package com.monitora.preco.service;
 
+import com.monitora.preco.entity.Role;
 import com.monitora.preco.entity.Usuario;
 import com.monitora.preco.exception.UsuarioNaoEncontradoException;
-import com.monitora.preco.repository.RoleRepository;
 import com.monitora.preco.repository.UsuarioRepository;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,11 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository repository;
-    private final RoleRepository roleRepository;
 
     public Usuario salvar(Usuario usuario){
 
         if (usuario.getRole() == null) {
-            var rolePadrao = roleRepository.findById(2)
-                    .orElseThrow(() -> new IllegalStateException("Role padrão (id=2) não encontrada"));
+            var rolePadrao = Role.COMUM;
             usuario.setRole(rolePadrao);
         }
 
@@ -48,5 +47,9 @@ public class UsuarioService {
     public void deletar(Integer id){
         Usuario usuario = buscarPorId(id);
         repository.delete(usuario);
+    }
+
+    public Usuario buscarPorEmail(@NotBlank String email) {
+        return repository.findByEmail(email).orElseThrow(UsuarioNaoEncontradoException::new);
     }
 }

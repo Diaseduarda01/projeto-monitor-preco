@@ -1,18 +1,13 @@
 package com.monitora.preco.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Entity
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class Role {
+public enum Role {
+    ADMIN(1),
+    COMUM(2);
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private String nome;
+    private final Integer codigo;
 }

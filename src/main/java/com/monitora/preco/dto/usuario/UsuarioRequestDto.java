@@ -3,18 +3,14 @@ package com.monitora.preco.dto.usuario;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class UsuarioRequestDto {
+public record UsuarioRequestDto (
+        @NotNull
+         String nome,
 
-    @NotNull
-    private String nome;
+         @NotNull
+          String email,
 
-    @NotNull
-    private String email;
-
-    @NotNull
-    private String senha;
+         @NotNull
+          String senha
+) {
 }

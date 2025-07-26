@@ -1,12 +1,11 @@
 package com.monitora.preco.service;
 
 import com.monitora.preco.entity.Produto;
-import com.monitora.preco.exception.ProdutoNaoEncontrado;
+import com.monitora.preco.exception.ProdutoNaoEncontradoException;
 import com.monitora.preco.repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @Service
@@ -30,7 +29,7 @@ public class ProdutoService {
     }
 
     public Produto buscarPorId(Integer id) {
-        return repository.findById(id).orElseThrow(ProdutoNaoEncontrado::new);
+        return repository.findById(id).orElseThrow(ProdutoNaoEncontradoException::new);
     }
 
     public List<Produto> buscarTodos() {
@@ -42,10 +41,14 @@ public class ProdutoService {
 
         produtoExistente.setNome(produto.getNome());
         produtoExistente.setUrl(produto.getUrl());
+        produtoExistente.setClasse(produto.getClasse());
         produtoExistente.setAtivo(produto.getAtivo());
         produtoExistente.setPrecoDesejado(produto.getPrecoDesejado());
 
         return repository.save(produtoExistente);
     }
 
+    public List<Produto> buscarProdutosAtivos() {
+        return repository.findByAtivoTrue();
+    }
 }

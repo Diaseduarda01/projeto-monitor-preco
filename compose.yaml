@@ -8,3 +8,8 @@ services:
       - 'MYSQL_USER=myuser'
     ports:
       - '3306:3306'
+
+  monitor:
+    build: .
+    environment:
+      MONITOR_INTERVAL: 3600000

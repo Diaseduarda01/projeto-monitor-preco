@@ -32,3 +32,15 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
       jdbc:
         time_zone: UTC
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "precomonitora@gmail.com"
+    password: "@Parys100"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

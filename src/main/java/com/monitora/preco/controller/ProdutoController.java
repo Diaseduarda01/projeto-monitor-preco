@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @RestController
@@ -28,7 +27,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDto> buscarPorId(@PathVariable BigInteger id) {
+    public ResponseEntity<ProdutoResponseDto> buscarPorId(@PathVariable Integer id) {
         Produto produtoBuscar = service.buscarPorId(id);
 
         return ResponseEntity.status(201).body(mapper.toResponse(produtoBuscar));
@@ -46,14 +45,14 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDto> editar(@RequestBody ProdutoRequestDto request, @PathVariable BigInteger id){
+    public ResponseEntity<ProdutoResponseDto> editar(@RequestBody ProdutoRequestDto request, @PathVariable Integer id){
         Produto produtoSalvar = mapper.toEntity(request);
         Produto produtoSalvo = service.atualizar(id, produtoSalvar);
         return ResponseEntity.status(201).body(mapper.toResponse(produtoSalvo));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletar(@PathVariable BigInteger id){
+    public ResponseEntity<String> deletar(@PathVariable Integer id){
         service.deletar(id);
         return  ResponseEntity.ok("produto deletado com sucesso.");
     }

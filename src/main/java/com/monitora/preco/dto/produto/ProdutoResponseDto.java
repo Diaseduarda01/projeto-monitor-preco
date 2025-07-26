@@ -3,7 +3,7 @@ package com.monitora.preco.dto.produto;
 import java.math.BigInteger;
 
 public record ProdutoResponseDto (
-        BigInteger id,
+        Integer id,
         String nome,
         String url,
         Double precoDesejado,

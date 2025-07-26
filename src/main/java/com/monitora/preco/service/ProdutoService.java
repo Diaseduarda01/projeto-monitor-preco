@@ -19,12 +19,12 @@ public class ProdutoService {
         return repository.save(produto);
     }
 
-    public void deletar (BigInteger id) {
+    public void deletar (Integer id) {
         Produto produto = buscarPorId(id);
         repository.deleteById(id);
     }
 
-    public Produto buscarPorId(BigInteger id) {
+    public Produto buscarPorId(Integer id) {
         return repository.findById(id).orElseThrow(ProdutoNaoEncontrado::new);
     }
 
@@ -32,7 +32,7 @@ public class ProdutoService {
         return repository.findAll();
     }
 
-    public Produto atualizar(BigInteger id, Produto produto) {
+    public Produto atualizar(Integer id, Produto produto) {
         Produto produtoExistente = buscarPorId(id);
 
         produtoExistente.setNome(produto.getNome());

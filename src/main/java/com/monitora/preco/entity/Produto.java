@@ -17,7 +17,7 @@ public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigInteger id;
+    private Integer id;
     private String nome;
     private String url;
     private Double precoDesejado;

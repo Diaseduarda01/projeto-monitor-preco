@@ -2,14 +2,14 @@ package com.monitora.preco.exception;
 
 import com.monitora.preco.exception.base.NaoEncontradoException;
 
-public class ProdutoNaoEncontrado extends NaoEncontradoException {
+public class ProdutoNaoEncontradoException extends NaoEncontradoException {
   public static final String MESSAGE = "Produto não encontrado";
 
-  public ProdutoNaoEncontrado() {
+  public ProdutoNaoEncontradoException() {
     super(MESSAGE);
   }
 
-  public ProdutoNaoEncontrado(String message, Throwable cause) {
+  public ProdutoNaoEncontradoException(String message, Throwable cause) {
     super(message, cause);
   }
 }

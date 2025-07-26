@@ -2,6 +2,7 @@ package com.monitora.preco.dto.produto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public record ProdutoRequestDto (
 
@@ -15,6 +16,10 @@ public record ProdutoRequestDto (
          Double precoDesejado,
 
         @NotBlank
-         Boolean ativo
+         Boolean ativo,
+
+        @NotNull
+        @Positive
+        Integer idUsuario
 ){
 }

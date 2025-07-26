@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/prdutos")
+@RequestMapping("/produtos")
 @RequiredArgsConstructor
 public class ProdutoController {
 
@@ -22,7 +22,7 @@ public class ProdutoController {
     @PostMapping
     public ResponseEntity<ProdutoResponseDto> salvar(@RequestBody ProdutoRequestDto dto) {
         Produto produtoSalvar = mapper.toEntity(dto);
-        Produto produtoSalvo = service.salvar(produtoSalvar);
+        Produto produtoSalvo = service.salvar(produtoSalvar, dto.idUsuario());
         return ResponseEntity.status(201).body(mapper.toResponse(produtoSalvo));
     }
 

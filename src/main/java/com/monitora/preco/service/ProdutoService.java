@@ -14,13 +14,18 @@ import java.util.List;
 public class ProdutoService {
 
     private final ProdutoRepository repository;
+    private final UsuarioService service;
 
-    public Produto salvar(Produto produto) {
+    public Produto salvar(Produto produto, Integer idUsuario) {
+        this.definirFk(produto,idUsuario);
         return repository.save(produto);
     }
 
+    public void definirFk(Produto produto, Integer idUsuario) {
+        produto.setUsuario(service.buscarPorId(idUsuario));
+    }
+
     public void deletar (Integer id) {
-        Produto produto = buscarPorId(id);
         repository.deleteById(id);
     }
 
@@ -40,7 +45,7 @@ public class ProdutoService {
         produtoExistente.setAtivo(produto.getAtivo());
         produtoExistente.setPrecoDesejado(produto.getPrecoDesejado());
 
-        return salvar(produtoExistente);
+        return repository.save(produtoExistente);
     }
 
 }

@@ -20,13 +20,6 @@ public class PrecoApplication {
 	//Endpoint para listar relatórios disponíveis
 	//Endpoint para download do relatório (GET /relatorios/{id}/download)
 
-	//Processo para pegar preço:
-	//Busque os produtos ativos (query no banco produto onde ativo = true)
-	//Para cada produto, acesse a URL e pegue o preço atual
-	//Salve o preço coletado na tabela historico_preco
-	//Verifique se o preço coletado é menor ou igual ao preco_desejado
-	//Caso sim, crie uma notificação e envie um email
-
 	//Agendamento periódico:
 	//@Scheduled para executar uma tarefa periodicamente (ex: a cada 1 hora, 1 dia, 1 Semana)
 }

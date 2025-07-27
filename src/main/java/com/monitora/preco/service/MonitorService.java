@@ -3,18 +3,21 @@ package com.monitora.preco.service;
 import com.monitora.preco.entity.HistoricoPreco;
 import com.monitora.preco.entity.Notificacao;
 import com.monitora.preco.entity.Produto;
-import com.monitora.preco.exception.ClasseNaoEncontradaException;
 import com.monitora.preco.utils.LoggerUtils;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.AllArgsConstructor;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Value;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -51,29 +54,58 @@ public class MonitorService {
         LoggerUtils.info("Finish monitor preço");
     }
 
-    private BigDecimal buscarPreco(String url, String classePreco) throws IOException {
-        Document doc = Jsoup.connect(url)
-                .timeout(10000)
-                .userAgent("Mozilla/5.0")
-                .get();
 
-        String seletor = "span." + classePreco;
+    public BigDecimal buscarPreco(String url, String classe) {
+        WebDriverManager.chromedriver().browserVersion("135.0.7049.84").setup();
+        WebDriver driver = new ChromeDriver();
 
-        Element precoElement = doc.selectFirst(seletor);
+        try {
+            driver.get(url);
 
-        if (precoElement == null) {
-            throw new ClasseNaoEncontradaException();
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+            List<WebElement> elementos;
+
+            if (classe != null && !classe.isBlank()) {
+                if (classe.contains(" ")) {
+                    // Múltiplas classes: seletor CSS
+                    String seletorCss = "." + classe.trim().replace(" ", ".");
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(seletorCss)));
+                    elementos = driver.findElements(By.cssSelector(seletorCss));
+                } else {
+                    // Classe única
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(classe)));
+                    elementos = driver.findElements(By.className(classe));
+                }
+            } else {
+                // Busca genérica por qualquer elemento que contenha "R$"
+                By xpath = By.xpath("//*[contains(text(),'R$')]");
+                wait.until(ExpectedConditions.visibilityOfElementLocated(xpath));
+                elementos = driver.findElements(xpath);
+            }
+
+            for (WebElement elemento : elementos) {
+                // Garante que o elemento esteja visível e tenha texto
+                if (elemento.isDisplayed()) {
+                    String texto = elemento.getText();
+                    if (texto.matches(".*R\\$\\s?\\d+[\\.,]?\\d*.*")) {
+                        String precoStr = texto.replaceAll("[^\\d,\\.]", "")
+                                .replace(".", "")
+                                .replace(",", ".")
+                                .trim();
+
+                        return new BigDecimal(precoStr);
+                    }
+                }
+            }
+
+            throw new RuntimeException("Preço não encontrado na página.");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar preço: " + e.getMessage(), e);
+        } finally {
+            driver.quit();
         }
-
-        String precoStr = precoElement.text();
-        precoStr = precoStr.replace("R$", "")
-                .replace(".", "")
-                .replace(",", ".")
-                .trim();
-
-        return new BigDecimal(precoStr);
     }
-
 
     private void salvarHistorico(Produto produto, BigDecimal preco) {
         HistoricoPreco historico = new HistoricoPreco();
@@ -100,8 +132,12 @@ public class MonitorService {
 
                 emailService.enviarEmail(
                         produto.getUsuario().getEmail(),
-                        "🎯 Preço atingido!",
-                        "O produto '" + produto.getNome() + "' atingiu o preço de R$" + precoAtual
+                        "🎯 Preço atingido: " + produto.getNome(),
+                        produto.getNome(),
+                        "R$ " + precoAtual,
+                        "R$ " + produto.getPrecoDesejado(),
+                        produto.getUrl(),
+                        produto.getUsuario().getNome()
                 );
 
                 notificacao.setEnviado(true);

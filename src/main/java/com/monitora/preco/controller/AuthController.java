@@ -1,13 +1,13 @@
-package com.monitora.preco.config.security;
+package com.monitora.preco.controller;
 
-import com.monitora.preco.config.security.dto.AuthRequest;
-import com.monitora.preco.config.security.dto.AuthResponse;
-import com.monitora.preco.config.security.jwt.JwtUtil;
-import com.monitora.preco.config.security.service.AuthUserDetailsService;
+import com.monitora.preco.dto.auth.AuthRequestDto;
+import com.monitora.preco.dto.auth.AuthResponseDto;
 import com.monitora.preco.dto.usuario.UsuarioMapper;
 import com.monitora.preco.dto.usuario.UsuarioRequestDto;
 import com.monitora.preco.entity.Usuario;
+import com.monitora.preco.service.AuthUserDetailsService;
 import com.monitora.preco.service.UsuarioService;
+import com.monitora.preco.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,10 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,30 +33,58 @@ public class AuthController {
     private final UsuarioMapper mapper;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha()));
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-        String token = jwtUtil.gerarToken(userDetails);
+    public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto request) {
+        autenticar(request);
 
-        Usuario usuario = usuarioService.buscarPorEmail(request.getEmail());
-        return ResponseEntity.ok(new AuthResponse(token, usuario.getNome(), usuario.getRole().name()));
-    }
+        Usuario usuario = usuarioService.buscarPorEmail(request.email());
+        String token = gerarToken(usuario);
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody UsuarioRequestDto dto) {
-        dto.setSenha(encoder.encode(dto.getSenha()));
-        Usuario usuarioSalvar = mapper.toEntity(dto);
-        Usuario novo = usuarioService.salvar(usuarioSalvar);
-
-        String token = jwtUtil.gerarToken(
-                new User(
-                        novo.getEmail(),
-                        novo.getSenha(),
-                        List.of(new SimpleGrantedAuthority("ROLE_" + novo.getRole().name()))
-                )
+        // Cria o DTO da Role
+        var roleDto = new AuthResponseDto.RoleResponseDto(
+                usuario.getRole().getId(),
+                usuario.getRole().getNome()
         );
 
-        return ResponseEntity.ok(new AuthResponse(token, novo.getNome(), novo.getRole().name()));
+        return ResponseEntity.ok(new AuthResponseDto(token, usuario.getNome(), roleDto));
     }
 
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponseDto> register(@RequestBody UsuarioRequestDto dto) {
+        Usuario usuarioSalvar = prepararUsuarioParaSalvar(dto);
+        Usuario novo = usuarioService.salvar(usuarioSalvar, dto.role().nome());
+        String token = gerarToken(novo);
+
+        var roleDto = new AuthResponseDto.RoleResponseDto(
+                novo.getRole().getId(),
+                novo.getRole().getNome()
+        );
+
+        return ResponseEntity.ok(new AuthResponseDto(token, novo.getNome(), roleDto));
+    }
+
+
+    // ========== MÉTODOS PRIVADOS AUXILIARES ==========
+
+    private void autenticar(AuthRequestDto request) {
+        authManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.email(),
+                request.senha()
+        ));
+    }
+
+    private String gerarToken(Usuario usuario) {
+        UserDetails userDetails = new User(
+                usuario.getEmail(),
+                usuario.getSenha(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRole().getNome()))
+        );
+        return jwtUtil.gerarToken(userDetails);
+    }
+
+    private Usuario prepararUsuarioParaSalvar(UsuarioRequestDto dto) {
+        Usuario usuario = mapper.toEntity(dto);
+        usuario.setSenha(encoder.encode(dto.senha()));
+        return usuario;
+    }
 }

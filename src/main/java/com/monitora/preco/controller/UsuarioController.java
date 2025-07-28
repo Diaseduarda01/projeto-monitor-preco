@@ -22,9 +22,12 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<UsuarioResponseDto> salvar(@RequestBody UsuarioRequestDto request){
         Usuario usuarioSalvar = mapper.toEntity(request);
-        Usuario usuarioSalvo = service.salvar(usuarioSalvar);
+        String nomeRole = request.role().nome();
+        Usuario usuarioSalvo = service.salvar(usuarioSalvar, nomeRole);
+
         return ResponseEntity.status(201).body(mapper.toResponseDto(usuarioSalvo));
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponseDto> buscarporId(@PathVariable Integer id){

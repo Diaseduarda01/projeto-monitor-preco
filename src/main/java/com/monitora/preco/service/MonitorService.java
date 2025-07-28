@@ -3,6 +3,7 @@ package com.monitora.preco.service;
 import com.monitora.preco.entity.HistoricoPreco;
 import com.monitora.preco.entity.Notificacao;
 import com.monitora.preco.entity.Produto;
+import com.monitora.preco.exception.PrecoNaoEncontradoException;
 import com.monitora.preco.utils.LoggerUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.AllArgsConstructor;
@@ -98,7 +99,7 @@ public class MonitorService {
                 }
             }
 
-            throw new RuntimeException("Preço não encontrado na página.");
+            throw new PrecoNaoEncontradoException();
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar preço: " + e.getMessage(), e);

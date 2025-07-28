@@ -9,7 +9,4 @@ public class ProdutoNaoEncontradoException extends NaoEncontradoException {
     super(MESSAGE);
   }
 
-  public ProdutoNaoEncontradoException(String message, Throwable cause) {
-    super(message, cause);
-  }
 }

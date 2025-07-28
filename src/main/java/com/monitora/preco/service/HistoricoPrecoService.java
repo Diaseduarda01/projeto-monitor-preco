@@ -23,7 +23,7 @@ public class HistoricoPrecoService {
         historicoPreco.setProduto(produtoService.buscarPorId(idProduto));
     }
 
-    public List<HistoricoPreco> listarHistoricoPorIdProduto(Integer idProduto) {
-        return repository.findByProdutoId(idProduto);
+    public List<HistoricoPreco> listarHistoricoPorProdutoEUsuario(Integer idProduto, Integer idUsuario) {
+        return repository.findByProdutoIdAndProdutoUsuarioId(idProduto, idUsuario);
     }
 }

@@ -16,13 +16,20 @@ public class HistoricoPrecoController {
 
     private final HistoricoPrecoService service;
 
-    @GetMapping("/{idProduto}")
-    public ResponseEntity<List<HistoricoPrecoResponseDto>> listarHistoricoPorIdProduto(@PathVariable Integer idProduto) {
-        List<HistoricoPreco> historico = service.listarHistoricoPorIdProduto(idProduto);
+    @GetMapping("/{idProduto}/{idUsuario}")
+    public ResponseEntity<List<HistoricoPrecoResponseDto>> listarHistoricoPorIdProduto(
+            @PathVariable Integer idProduto,
+            @PathVariable Integer idUsuario) {
+
+        List<HistoricoPreco> historico = service.listarHistoricoPorProdutoEUsuario(idProduto, idUsuario);
+
         List<HistoricoPrecoResponseDto> resposta = historico.stream()
                 .map(h -> new HistoricoPrecoResponseDto(h.getPrecoColetado(), h.getDataColeta()))
                 .toList();
+
         return ResponseEntity.ok(resposta);
     }
+
+
 
 }

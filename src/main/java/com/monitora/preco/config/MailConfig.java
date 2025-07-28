@@ -1,4 +1,4 @@
-package com.monitora.preco.config;
+package com.monitora.preco.config.email;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

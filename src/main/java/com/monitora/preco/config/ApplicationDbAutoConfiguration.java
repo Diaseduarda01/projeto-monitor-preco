@@ -1,4 +1,4 @@
-package com.monitora.preco.config;
+package com.monitora.preco.config.database;
 
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;

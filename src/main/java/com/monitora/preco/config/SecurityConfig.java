@@ -1,7 +1,7 @@
 package com.monitora.preco.config.security;
 
 import com.monitora.preco.config.security.jwt.JwtAuthenticationFilter;
-import com.monitora.preco.config.security.service.AuthUserDetailsService;
+import com.monitora.preco.service.AuthUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,7 @@
 package com.monitora.preco.config.security.jwt;
 
-import com.monitora.preco.config.security.service.AuthUserDetailsService;
+import com.monitora.preco.service.AuthUserDetailsService;
+import com.monitora.preco.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

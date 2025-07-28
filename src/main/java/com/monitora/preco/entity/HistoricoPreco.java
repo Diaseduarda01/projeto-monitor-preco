@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,6 +20,9 @@ public class HistoricoPreco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private BigDecimal precoColetado;
+
+    @Column(name = "data_coleta", updatable = false, insertable = false)
+    private LocalDateTime dataColeta;
 
     @ManyToOne
     private Produto produto;

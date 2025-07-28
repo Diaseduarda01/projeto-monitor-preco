@@ -3,6 +3,12 @@ package com.monitora.preco.dto.auth;
 public record AuthResponseDto(
         String token,
         String nome,
-        String role
-) {}
+        RoleResponseDto roleResponseDto
+) {
+    public record RoleResponseDto(
+
+            Integer id,
+            String nome
+    ) {}
+}
 

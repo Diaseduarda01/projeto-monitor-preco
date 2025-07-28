@@ -1,6 +1,5 @@
 package com.monitora.preco.entity;
 
-import com.monitora.preco.utils.RoleConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +18,7 @@ public class Usuario {
     private String email;
     private String senha;
 
-    @Column(nullable = false)
-    @Convert(converter = RoleConverter.class)
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 }

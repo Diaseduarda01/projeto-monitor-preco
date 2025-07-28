@@ -1,4 +1,4 @@
-package com.monitora.preco.exception.base;
+package com.monitora.preco.exception.naoencontrado.base;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

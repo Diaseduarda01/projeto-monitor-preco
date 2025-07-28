@@ -3,7 +3,7 @@ package com.monitora.preco.service;
 import com.monitora.preco.entity.HistoricoPreco;
 import com.monitora.preco.entity.Notificacao;
 import com.monitora.preco.entity.Produto;
-import com.monitora.preco.exception.PrecoNaoEncontradoException;
+import com.monitora.preco.exception.naoencontrado.PrecoNaoEncontradoException;
 import com.monitora.preco.utils.LoggerUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 

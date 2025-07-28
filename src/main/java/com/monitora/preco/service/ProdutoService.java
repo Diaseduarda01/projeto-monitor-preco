@@ -1,7 +1,7 @@
 package com.monitora.preco.service;
 
 import com.monitora.preco.entity.Produto;
-import com.monitora.preco.exception.ProdutoNaoEncontradoException;
+import com.monitora.preco.exception.naoencontrado.ProdutoNaoEncontradoException;
 import com.monitora.preco.repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

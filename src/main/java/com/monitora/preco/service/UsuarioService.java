@@ -1,7 +1,7 @@
 package com.monitora.preco.service;
 
 import com.monitora.preco.entity.Usuario;
-import com.monitora.preco.exception.UsuarioNaoEncontradoException;
+import com.monitora.preco.exception.naoencontrado.UsuarioNaoEncontradoException;
 import com.monitora.preco.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

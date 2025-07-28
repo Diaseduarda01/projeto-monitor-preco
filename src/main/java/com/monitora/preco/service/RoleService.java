@@ -13,7 +13,7 @@ public class RoleService {
     private final RoleRepository repository;
 
     public Role buscarPorNome(String nome) {
-        return repository.findByNome(nome)
+        return repository.findByNomeIgnoreCase(nome)
                 .orElseThrow(RoleNaoEncontradoException::new);
     }
 }

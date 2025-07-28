@@ -15,15 +15,14 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository repository;
+    private final RoleService roleService;
 
-    public Usuario salvar(Usuario usuario){
+    public Usuario salvar(Usuario usuario, String nome){
+       Role role = roleService.buscarPorNome(nome);
 
-        if (usuario.getRole() == null) {
-            var rolePadrao = Role.COMUM;
-            usuario.setRole(rolePadrao);
-        }
+       usuario.setRole(role);
 
-        return repository.save(usuario);
+       return repository.save(usuario);
     }
 
     public Usuario buscarPorId(Integer id){
@@ -40,8 +39,9 @@ public class UsuarioService {
         usuarioExiste.setNome(usuarioAtualizado.getNome());
         usuarioExiste.setEmail(usuarioAtualizado.getEmail());
         usuarioExiste.setSenha(usuarioAtualizado.getSenha());
+        usuarioExiste.setRole(usuarioAtualizado.getRole());
 
-        return salvar(usuarioExiste);
+        return repository.save(usuarioExiste);
     }
 
     public void deletar(Integer id){

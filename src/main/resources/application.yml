@@ -32,3 +32,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
       jdbc:
         time_zone: UTC
+
+jwt:
+  secret: nVQmH9O9sX0kqeEtG/0bl5Y2pT1HQ9h4PthFQ8I8mLkw=

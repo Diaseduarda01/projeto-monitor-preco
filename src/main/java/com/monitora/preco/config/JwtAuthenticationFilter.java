@@ -1,4 +1,4 @@
-package com.monitora.preco.config.security.jwt;
+package com.monitora.preco.config;
 
 import com.monitora.preco.service.AuthUserDetailsService;
 import com.monitora.preco.utils.JwtUtil;

@@ -1,7 +1,7 @@
-package com.monitora.preco.config.security.jwt;
+package com.monitora.preco.utils;
 
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -20,6 +20,7 @@ public class JwtUtil {
 
     // Recebe a chave secreta em Base64 pelo application.properties
     public JwtUtil(@Value("${jwt.secret}") String base64Secret) {
+        System.out.println("jwt.secret recebido: '" + base64Secret + "'");
         this.secretKey = Keys.hmacShaKeyFor(java.util.Base64.getDecoder().decode(base64Secret));
     }
 

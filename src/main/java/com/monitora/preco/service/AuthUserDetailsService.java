@@ -1,4 +1,4 @@
-package com.monitora.preco.config.security.service;
+package com.monitora.preco.service;
 
 import com.monitora.preco.entity.Usuario;
 import com.monitora.preco.repository.UsuarioRepository;
@@ -23,7 +23,7 @@ public class AuthUserDetailsService implements UserDetailsService {
         return new User(
                 usuario.getEmail(),
                 usuario.getSenha(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRole().name()))
+                List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRole().getNome()))
         );
     }
 }

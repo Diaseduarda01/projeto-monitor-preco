@@ -4,6 +4,11 @@ public record UsuarioResponseDto (
         Integer id,
         String nome,
         String email,
-        String senha
+        RoleResponseDto role
 ){
+    public record RoleResponseDto(
+
+            Integer id,
+            String nome
+    ) {}
 }

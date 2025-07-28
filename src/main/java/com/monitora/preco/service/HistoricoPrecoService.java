@@ -1,7 +1,6 @@
 package com.monitora.preco.service;
 
 import com.monitora.preco.entity.HistoricoPreco;
-import com.monitora.preco.entity.Produto;
 import com.monitora.preco.repository.HistoricoPrecoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

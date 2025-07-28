@@ -5,6 +5,8 @@ import com.monitora.preco.repository.HistoricoPrecoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class HistoricoPrecoService {
@@ -19,5 +21,9 @@ public class HistoricoPrecoService {
 
     public void definirFk(HistoricoPreco historicoPreco, Integer idProduto) {
         historicoPreco.setProduto(produtoService.buscarPorId(idProduto));
+    }
+
+    public List<HistoricoPreco> listarHistoricoPorIdProduto(Integer idProduto) {
+        return repository.findByProdutoId(idProduto);
     }
 }

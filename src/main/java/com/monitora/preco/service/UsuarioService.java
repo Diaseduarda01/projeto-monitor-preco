@@ -33,17 +33,22 @@ public class UsuarioService {
         return repository.findAll();
     }
 
-    public Usuario editar(Integer id, Usuario usuarioAtualizado){
-        Usuario usuarioExiste = buscarPorId(id);
+    public Usuario editar(Integer id, Usuario usuarioAtualizado) {
+        Usuario usuarioExistente = buscarPorId(id);
+        atualizarCampos(usuarioExistente, usuarioAtualizado);
 
-        usuarioExiste.setNome(usuarioAtualizado.getNome());
-        usuarioExiste.setEmail(usuarioAtualizado.getEmail());
-        usuarioExiste.setSenha(usuarioAtualizado.getSenha());
-        usuarioExiste.setRole(usuarioAtualizado.getRole());
+        String nomeRole = (usuarioAtualizado.getRole() != null)
+                ? usuarioAtualizado.getRole().getNome()
+                : usuarioExistente.getRole().getNome();
 
-        return repository.save(usuarioExiste);
+        return salvar(usuarioExistente, nomeRole);
     }
 
+    private void atualizarCampos(Usuario destino, Usuario origem) {
+        destino.setNome(origem.getNome());
+        destino.setEmail(origem.getEmail());
+        destino.setSenha(origem.getSenha());
+    }
     public void deletar(Integer id){
         repository.deleteById(id);
     }

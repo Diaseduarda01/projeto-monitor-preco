@@ -1,4 +1,4 @@
-package com.monitora.preco.controller;
+package com.monitora.preco.controller.produto;
 
 import com.monitora.preco.dto.produto.ProdutoMapper;
 import com.monitora.preco.dto.produto.ProdutoRequestDto;
@@ -14,27 +14,27 @@ import java.util.List;
 @RestController
 @RequestMapping("/produtos")
 @RequiredArgsConstructor
-public class ProdutoController {
+public class ProdutoController implements ProdutoControllerDoc {
 
     private final ProdutoService service;
     private final ProdutoMapper mapper;
 
-    @PostMapping
-    public ResponseEntity<ProdutoResponseDto> salvar(@RequestBody ProdutoRequestDto dto) {
-        Produto produtoSalvar = mapper.toEntity(dto);
-        Produto produtoSalvo = service.salvar(produtoSalvar, dto.idUsuario());
+    @Override
+    public ResponseEntity<ProdutoResponseDto> salvar(ProdutoRequestDto request) {
+        Produto produtoSalvar = mapper.toEntity(request);
+        Produto produtoSalvo = service.salvar(produtoSalvar, request.idUsuario());
         return ResponseEntity.status(201).body(mapper.toResponse(produtoSalvo));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDto> buscarPorId(@PathVariable Integer id) {
+    @Override
+    public ResponseEntity<ProdutoResponseDto> buscarPorId(Integer id) {
         Produto produtoBuscar = service.buscarPorId(id);
 
         return ResponseEntity.status(201).body(mapper.toResponse(produtoBuscar));
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProdutoResponseDto>> buscarTodos(){
+    @Override
+    public ResponseEntity<List<ProdutoResponseDto>> buscarTodos() {
         List<Produto> produtoList = service.buscarTodos();
 
         return produtoList.isEmpty()
@@ -44,17 +44,17 @@ public class ProdutoController {
                 .toList());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDto> editar(@RequestBody ProdutoRequestDto request, @PathVariable Integer id){
+    @Override
+    public ResponseEntity<ProdutoResponseDto> atualizar(ProdutoRequestDto request, Integer id) {
         Produto produtoSalvar = mapper.toEntity(request);
         Produto produtoSalvo = service.atualizar(id, produtoSalvar);
         return ResponseEntity.status(201).body(mapper.toResponse(produtoSalvo));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletar(@PathVariable Integer id){
+    @Override
+    public ResponseEntity<String> deletar(Integer id) {
         service.deletar(id);
-        return  ResponseEntity.ok("produto deletado com sucesso.");
+        return  ResponseEntity.ok("Produto deletado com sucesso.");
     }
 
 }

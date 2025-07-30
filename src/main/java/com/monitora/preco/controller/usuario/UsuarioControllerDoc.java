@@ -19,13 +19,13 @@ import java.util.List;
 public interface UsuarioControllerDoc {
 
     @PostMapping()
-    @Operation(summary = "Salvar Usuário", description = """
-            Salvar Usuário
+    @Operation(summary = "Salvar usuário", description = """
+            Salvar usuário
             ---
-            Salva Usuário no banco de dados
+            Salva usuário no banco de dados
             """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Quando a entidade é cadastrada com sucesso",
+            @ApiResponse(responseCode = "201", description = "Quando o usuário é cadastrada com sucesso",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = UsuarioResponseDto.class)
@@ -35,13 +35,13 @@ public interface UsuarioControllerDoc {
             @ApiResponse(responseCode = "404", description = "Quando o nome do role recebido no corpo não existe no banco de dados",
                     content = @Content())
     })
-    ResponseEntity<UsuarioResponseDto> salvarUsuario(@RequestBody UsuarioRequestDto request);
+    ResponseEntity<UsuarioResponseDto> salvar(@RequestBody UsuarioRequestDto request);
 
     @GetMapping("/{id}")
-    @Operation(summary = "Buscar Usuário Por Id", description = """
-           Buscar Usuário Por Id
+    @Operation(summary = "Buscar usuário por id", description = """
+           Buscar usuário por id
             ---
-           Buscar Usuário Por Id no banco de dados
+           Buscar usuário por id no banco de dados
            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quando o usuário é encontrado com sucesso",
@@ -52,14 +52,14 @@ public interface UsuarioControllerDoc {
             @ApiResponse(responseCode = "404", description = "Quando o usuaŕio não for encontrado pelo id no banco de dados",
                     content = @Content())
     })
-    ResponseEntity<UsuarioResponseDto> buscarUsuarioPorId(@PathVariable Integer id);
+    ResponseEntity<UsuarioResponseDto> buscarPorId(@PathVariable Integer id);
 
 
     @GetMapping()
-    @Operation(summary = "Buscar Todos os Usuário", description = """
-           Buscar Todos os Usuário 
+    @Operation(summary = "Buscar todos os usuário", description = """
+           Buscar todos os usuário
             ---
-           Buscar Todos os Usuário que estão cadastrados no banco de dados
+           Buscar todos os usuário que estão cadastrados no banco de dados
            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quando existe usuário cadastrado no banco de dados",
@@ -70,13 +70,13 @@ public interface UsuarioControllerDoc {
             @ApiResponse(responseCode = "204", description = "Quando não há nenhum usuaŕio cadastrado no banco de dados",
                     content = @Content())
     })
-    ResponseEntity<List<UsuarioResponseDto>> buscarTodosUsuarios();
+    ResponseEntity<List<UsuarioResponseDto>> buscarTodos();
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar Usuário", description = """
-           Atualizar Usuário
+    @Operation(summary = "Atualizar usuário", description = """
+           Atualizar usuário
             ---
-           Atualizar Usuário no banco de dados
+           Atualizar usuário no banco de dados
            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quando usuário foi atualizado com sucesso no banco de dados",
@@ -89,13 +89,13 @@ public interface UsuarioControllerDoc {
             @ApiResponse(responseCode = "404", description = "Quando o nome do role recebido no corpo não existe no banco de dados",
                     content = @Content())
     })
-    ResponseEntity<UsuarioResponseDto> atualizarUsuario(@RequestBody UsuarioRequestDto request, @PathVariable Integer id);
+    ResponseEntity<UsuarioResponseDto> atualizar(@RequestBody UsuarioRequestDto request, @PathVariable Integer id);
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Deletar Usuário por Id", description = """
-           Deletar Usuário por Id
+    @Operation(summary = "Deletar usuário por id", description = """
+           Deletar usuário por id
             ---
-           Deletar Usuário por Id no banco de dados
+           Deletar usuário por id no banco de dados
            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quando o usuário foi deletado no banco de dados com sucesso",
@@ -106,5 +106,5 @@ public interface UsuarioControllerDoc {
             @ApiResponse(responseCode = "204", description = "Quando não há nenhum usuaŕio cadastrado no banco de dados com este id",
                     content = @Content())
     })
-    ResponseEntity<String> deletarUsuario(@PathVariable Integer id);
+    ResponseEntity<String> deletar(@PathVariable Integer id);
 }

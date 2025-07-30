@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/monitoramento")
 @RequiredArgsConstructor
-public class MonitorController {
+public class MonitorPrecoController implements MonitorPrecoControllerDoc{
 
     private final MonitorService service;
 
-    @PostMapping("/executar")
+    @Override
     public ResponseEntity<String> monitorarAgora() {
         service.executarMonitoramento();
         return ResponseEntity.ok("Monitoramento executado manualmente.");

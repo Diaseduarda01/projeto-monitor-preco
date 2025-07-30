@@ -31,29 +31,27 @@ public class MonitorService {
 
     @Scheduled(fixedRateString = "3600000")
     public void executarMonitoramento() {
-        LoggerUtils.info("🔍 Starting monitor preço");
 
         List<Produto> produtos = service.buscarProdutosAtivos();
+        LoggerUtils.info("Produtos ativos encontrados: " + produtos.size());
 
         for (Produto produto : produtos) {
             try {
+
                 BigDecimal precoAtual = buscarPreco(produto.getUrl(), produto.getClasse());
 
                 if (precoAtual != null) {
+                    LoggerUtils.logProduto("PREÇO COLETADO", produto.getNome(), "R$ " + precoAtual);
+
                     salvarHistorico(produto, precoAtual);
                     verificarNotificacao(produto, precoAtual);
-
-                LoggerUtils.logProduto("Preço monitorado", produto.getNome(), "Preço atual: R$" + precoAtual);
                 }
 
             } catch (Exception e) {
-                LoggerUtils.error("Error ao monitorar produto: " + produto.getNome(), e);
+                LoggerUtils.error("Erro ao monitorar o produto: " + produto.getNome(), e);
             }
         }
-
-        LoggerUtils.info("Finish monitor preço");
     }
-
 
     public BigDecimal buscarPreco(String url, String classe) {
         WebDriverManager.chromedriver().browserVersion("135.0.7049.84").setup();
@@ -67,24 +65,20 @@ public class MonitorService {
 
             if (classe != null && !classe.isBlank()) {
                 if (classe.contains(" ")) {
-                    // Múltiplas classes: seletor CSS
                     String seletorCss = "." + classe.trim().replace(" ", ".");
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(seletorCss)));
                     elementos = driver.findElements(By.cssSelector(seletorCss));
                 } else {
-                    // Classe única
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(classe)));
                     elementos = driver.findElements(By.className(classe));
                 }
             } else {
-                // Busca genérica por qualquer elemento que contenha "R$"
                 By xpath = By.xpath("//*[contains(text(),'R$')]");
                 wait.until(ExpectedConditions.visibilityOfElementLocated(xpath));
                 elementos = driver.findElements(xpath);
             }
 
             for (WebElement elemento : elementos) {
-                // Garante que o elemento esteja visível e tenha texto
                 if (elemento.isDisplayed()) {
                     String texto = elemento.getText();
                     if (texto.matches(".*R\\$\\s?\\d+[\\.,]?\\d*.*")) {
@@ -93,17 +87,21 @@ public class MonitorService {
                                 .replace(",", ".")
                                 .trim();
 
+                        LoggerUtils.info("Preço extraído com sucesso: " + precoStr);
                         return new BigDecimal(precoStr);
                     }
                 }
             }
 
+            LoggerUtils.error("Preço não encontrado na página");
             throw new PrecoNaoEncontradoException();
 
         } catch (Exception e) {
+            LoggerUtils.error("Erro ao buscar preço na URL: " + url, e);
             throw new RuntimeException("Erro ao buscar preço: " + e.getMessage(), e);
         } finally {
             driver.quit();
+            LoggerUtils.info("Navegador encerrado para URL: " + url);
         }
     }
 
@@ -113,10 +111,13 @@ public class MonitorService {
         historico.setPrecoColetado(preco);
 
         historicoPrecoService.salvar(historico, historico.getProduto().getId());
+        LoggerUtils.info("Histórico salvo");
     }
 
     private void verificarNotificacao(Produto produto, BigDecimal precoAtual) {
+
         if (precoAtual.compareTo(produto.getPrecoDesejado()) <= 0) {
+            LoggerUtils.info("Preço atual (R$ " + precoAtual + ") atingiu ou está abaixo do preço desejado (R$ " + produto.getPrecoDesejado() + ")");
 
             boolean jaNotificou = notificacaoService.jaNotificou(produto, precoAtual);
 
@@ -142,7 +143,13 @@ public class MonitorService {
 
                 notificacao.setEnviado(true);
                 notificacaoService.salvar(notificacao, notificacao.getUsuario().getId(), notificacao.getProduto().getId());
+
+                LoggerUtils.info("Notificação enviada!");
+            } else {
+                LoggerUtils.info("Notificação já enviada anteriormente para esse preço.");
             }
+        } else {
+            LoggerUtils.info("Preço ainda não atingiu o desejado. Nenhuma ação necessária.");
         }
     }
 }

@@ -6,6 +6,7 @@ import com.monitora.preco.entity.Produto;
 import com.monitora.preco.exception.naoencontrado.ProdutoNaoEncontradoException;
 import com.monitora.preco.repository.HistoricoPrecoRepository;
 import com.monitora.preco.repository.ProdutoRepository;
+import com.monitora.preco.utils.LoggerUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,18 +27,23 @@ public class HistoricoPrecoService {
 
     public HistoricoPreco salvar(HistoricoPreco historicoPreco, Integer idProduto) {
         this.definirFk(historicoPreco, idProduto);
-        return repository.save(historicoPreco);
+        HistoricoPreco salvo = repository.save(historicoPreco);
+        LoggerUtils.info("Histórico de preço salvo com ID: " + salvo.getId());
+        return salvo;
     }
 
     public void definirFk(HistoricoPreco historicoPreco, Integer idProduto) {
+        LoggerUtils.info("Definindo FK do produto ID: " + idProduto + " no histórico de preço");
         historicoPreco.setProduto(produtoService.buscarPorId(idProduto));
     }
 
     public List<HistoricoPreco> listarHistoricoPorProdutoEUsuario(Integer idProduto, Integer idUsuario) {
+        LoggerUtils.info("Listando histórico de preço para produto ID: " + idProduto + " e usuário ID: " + idUsuario);
         return repository.findByProdutoIdAndProdutoUsuarioId(idProduto, idUsuario);
     }
 
     public Integer qtdProdutosMonitoradosPorusuario(Integer idusuario) {
+        LoggerUtils.info("Contando produtos monitorados pelo usuário ID: " + idusuario);
         return repository.countProdutosMonitoradosPorUsuario(idusuario);
     }
 
@@ -54,9 +60,11 @@ public class HistoricoPrecoService {
                     .existsByProdutoIdAndPrecoColetadoLessThanEqual(produto.getId(), limite);
 
             if (temPrecoPerto) {
+                LoggerUtils.logProduto("PERTO DO PREÇO", produto.getNome(), "ID: " + produto.getId());
                 contador++;
             }
         }
+        LoggerUtils.info("Total de produtos perto do preço desejado: " + contador);
         return contador;
     }
 
@@ -71,14 +79,17 @@ public class HistoricoPrecoService {
                     .existsByProdutoIdAndPrecoColetadoLessThanEqual(produto.getId(), produto.getPrecoDesejado());
 
             if (noPrecoOuMenor) {
+                LoggerUtils.logProduto("ATINGIU PREÇO DESEJADO", produto.getNome(), "ID: " + produto.getId());
                 contador++;
             }
         }
 
+        LoggerUtils.info("Total de produtos no preço desejado: " + contador);
         return contador;
     }
 
     public List<ProdutoDashboardResponseDto> listarProdutosParaDashboard(Integer usuarioId) {
+        LoggerUtils.info("Listando produtos para dashboard do usuário ID: " + usuarioId);
         List<Produto> produtos = produtoRepository.findByUsuarioId(usuarioId);
         List<ProdutoDashboardResponseDto> resposta = new ArrayList<>();
 
@@ -112,12 +123,17 @@ public class HistoricoPrecoService {
     }
 
     public BigDecimal getPrecoDesejado(Integer produtoId, Integer usuarioId) {
+        LoggerUtils.info("Buscando preço desejado do produto ID: " + produtoId + " para usuário ID: " + usuarioId);
         Produto produto = produtoRepository.findByIdAndUsuarioId(produtoId, usuarioId)
-                .orElseThrow(ProdutoNaoEncontradoException::new);
+                .orElseThrow(() -> {
+                    LoggerUtils.warn("Produto não encontrado com ID: " + produtoId + " para usuário ID: " + usuarioId);
+                    return new ProdutoNaoEncontradoException();
+                });
         return produto.getPrecoDesejado();
     }
 
     public BigDecimal getUltimoPreco(Integer produtoId, Integer usuarioId) {
+        LoggerUtils.info("Buscando último preço do produto ID: " + produtoId + " para usuário ID: " + usuarioId);
         return repository
                 .findTopByProdutoIdAndProdutoUsuarioIdOrderByDataColetaDesc(produtoId, usuarioId)
                 .map(HistoricoPreco::getPrecoColetado)
@@ -127,24 +143,34 @@ public class HistoricoPrecoService {
     public BigDecimal getVariacaoPercentual(Integer produtoId, Integer usuarioId) {
         List<HistoricoPreco> historicos = repository.findByProdutoIdAndProdutoUsuarioIdOrderByDataColetaAsc(produtoId, usuarioId);
 
-        if (historicos.size() < 2) return BigDecimal.ZERO;
+        if (historicos.size() < 2) {
+            LoggerUtils.warn("Histórico insuficiente para calcular variação");
+            return BigDecimal.ZERO;
+        }
 
         BigDecimal primeiro = historicos.get(0).getPrecoColetado();
         BigDecimal ultimo = historicos.get(historicos.size() - 1).getPrecoColetado();
-
-        return ultimo.subtract(primeiro)
+        BigDecimal variacao = ultimo.subtract(primeiro)
                 .divide(primeiro, 4, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100));
+
+        LoggerUtils.info("Variação percentual calculada: " + variacao + "%");
+        return variacao;
     }
 
     public Long getDiasDeMonitoramento(Integer produtoId, Integer usuarioId) {
         List<HistoricoPreco> historicos = repository.findByProdutoIdAndProdutoUsuarioIdOrderByDataColetaAsc(produtoId, usuarioId);
 
-        if (historicos.size() < 2) return 0L;
+        if (historicos.size() < 2) {
+            LoggerUtils.warn("Histórico insuficiente para calcular dias de monitoramento");
+            return 0L;
+        }
 
         LocalDate inicio = historicos.get(0).getDataColeta().toLocalDate();
         LocalDate fim = historicos.get(historicos.size() - 1).getDataColeta().toLocalDate();
 
-        return ChronoUnit.DAYS.between(inicio, fim);
+        Long dias = ChronoUnit.DAYS.between(inicio, fim);
+        LoggerUtils.info("Dias de monitoramento: " + dias);
+        return dias;
     }
 }

@@ -1,5 +1,6 @@
 package com.monitora.preco.service;
 
+import com.monitora.preco.utils.LoggerUtils;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -94,12 +95,9 @@ public class EmailService {
             helper.setText(corpoHtml, true);
             mailSender.send(mensagem);
 
-            System.out.println("E-mail enviado com sucesso!");
+            LoggerUtils.info("E-mail enviado com sucesso para: " + para);
         } catch (MailException | MessagingException e) {
-            e.printStackTrace();
-            System.out.println("Falha ao enviar e-mail.");
+            LoggerUtils.error("Falha ao enviar e-mail para: " + para + ". Erro: " + e.getMessage());
         }
     }
-
 }
-

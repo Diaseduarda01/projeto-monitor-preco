@@ -1,7 +1,9 @@
 package com.monitora.preco.service;
 
 import com.monitora.preco.entity.Usuario;
+import com.monitora.preco.exception.naoencontrado.UsuarioNaoEncontradoException;
 import com.monitora.preco.repository.UsuarioRepository;
+import com.monitora.preco.utils.LoggerUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
@@ -18,7 +20,12 @@ public class AuthUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Usuario usuario = repository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> {
+                    LoggerUtils.warn("Usuário não encontrado para o e-mail: " + email);
+                    return new UsuarioNaoEncontradoException();
+                });
+
+        LoggerUtils.info("Usuário autenticado com sucesso: " + email);
 
         return new User(
                 usuario.getEmail(),

@@ -1,4 +1,4 @@
-package com.monitora.preco.controller;
+package com.monitora.preco.controller.monitorpreco;
 
 import com.monitora.preco.service.MonitorService;
 import lombok.RequiredArgsConstructor;

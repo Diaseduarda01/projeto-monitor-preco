@@ -1,4 +1,4 @@
-package com.monitora.preco.controller;
+package com.monitora.preco.controller.historicopreco;
 
 import com.monitora.preco.dto.dashboard.ProdutoDashboardResponseDto;
 import com.monitora.preco.dto.historicopreco.HistoricoPrecoResponseDto;

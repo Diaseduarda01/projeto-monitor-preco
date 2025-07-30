@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Primary;
 @AutoConfiguration
 @RequiredArgsConstructor
 @ConditionalOnMissingBean(name = "applicationDataSource")
-public class ApplicationDbAutoConfiguration {
+public class DbAutoConfig {
 
     @Qualifier("jdbcConnectionDetails")
     private final JdbcConnectionDetails jdbcConnectionDetails;

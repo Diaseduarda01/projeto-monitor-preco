@@ -1,7 +1,4 @@
-package com.monitora.preco.config;
-
-import com.monitora.preco.utils.JwtUtil;
-import com.monitora.preco.utils.LoggerUtils;
+package com.monitora.preco.utils;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

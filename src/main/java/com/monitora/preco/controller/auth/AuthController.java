@@ -1,11 +1,10 @@
-package com.monitora.preco.controller;
+package com.monitora.preco.controller.auth;
 
 import com.monitora.preco.dto.auth.AuthRequestDto;
 import com.monitora.preco.dto.auth.AuthResponseDto;
 import com.monitora.preco.dto.usuario.UsuarioMapper;
 import com.monitora.preco.dto.usuario.UsuarioRequestDto;
 import com.monitora.preco.entity.Usuario;
-import com.monitora.preco.service.AuthUserDetailsService;
 import com.monitora.preco.service.UsuarioService;
 import com.monitora.preco.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControllerDoc{
 
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
@@ -31,7 +30,7 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final UsuarioMapper mapper;
 
-    @PostMapping("/login")
+    @Override
     public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto request) {
         autenticar(request);
 
@@ -47,7 +46,7 @@ public class AuthController {
     }
 
 
-    @PostMapping("/register")
+  @Override
     public ResponseEntity<AuthResponseDto> register(@RequestBody UsuarioRequestDto dto) {
         Usuario usuarioSalvar = prepararUsuarioParaSalvar(dto);
         Usuario novo = usuarioService.salvar(usuarioSalvar, dto.role());

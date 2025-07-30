@@ -44,12 +44,4 @@ public class LoggerUtils {
     public static void logProduto(String acao, String nomeProduto, String infoExtra) {
         info(String.format("Produto: '%s' | Ação: %s | Info: %s", nomeProduto, acao, infoExtra));
     }
-
-    public static void logUsuario(String acao, String nomeUsuario, String infoExtra) {
-        info(String.format("Produto: '%s' | Ação: %s | Info: %s", nomeUsuario, acao, infoExtra));
-    }
-
-    public static void logMonitor(String acao, String nomeMonitor, String infoExtra) {
-        info(String.format("Produto: '%s' | Ação: %s | Info: %s", nomeMonitor, acao, infoExtra));
-    }
 }

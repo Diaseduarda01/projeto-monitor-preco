@@ -15,12 +15,6 @@ public record UsuarioRequestDto (
           String senha,
 
         @NotBlank
-        RoleRequestDto role
+        String role
 
-) {
-    public record RoleRequestDto(
-
-            @NotBlank
-            String nome
-    ) {}
-}
+) {}

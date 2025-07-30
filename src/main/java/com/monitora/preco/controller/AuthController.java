@@ -26,7 +26,6 @@ import java.util.List;
 public class AuthController {
 
     private final AuthenticationManager authManager;
-    private final AuthUserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
     private final UsuarioService usuarioService;
     private final PasswordEncoder encoder;
@@ -39,7 +38,6 @@ public class AuthController {
         Usuario usuario = usuarioService.buscarPorEmail(request.email());
         String token = gerarToken(usuario);
 
-        // Cria o DTO da Role
         var roleDto = new AuthResponseDto.RoleResponseDto(
                 usuario.getRole().getId(),
                 usuario.getRole().getNome()
@@ -52,7 +50,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register(@RequestBody UsuarioRequestDto dto) {
         Usuario usuarioSalvar = prepararUsuarioParaSalvar(dto);
-        Usuario novo = usuarioService.salvar(usuarioSalvar, dto.role().nome());
+        Usuario novo = usuarioService.salvar(usuarioSalvar, dto.role());
         String token = gerarToken(novo);
 
         var roleDto = new AuthResponseDto.RoleResponseDto(
@@ -76,7 +74,7 @@ public class AuthController {
     private String gerarToken(Usuario usuario) {
         UserDetails userDetails = new User(
                 usuario.getEmail(),
-                usuario.getSenha(),
+                usuario.getNome(),
                 List.of(new SimpleGrantedAuthority("ROLE_" + usuario.getRole().getNome()))
         );
         return jwtUtil.gerarToken(userDetails);

@@ -93,17 +93,15 @@ public interface UsuarioControllerDoc {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar usuário por id", description = """
-           Deletar usuário por id
-            ---
-           Deletar usuário por id no banco de dados
-           """)
+        Deleta um usuário no banco de dados com base no id fornecido.
+        """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quando o usuário foi deletado no banco de dados com sucesso",
+            @ApiResponse(responseCode = "200", description = "Usuário deletado com sucesso",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = UsuarioResponseDto.class)
+                            schema = @Schema(implementation = String.class)
                     )),
-            @ApiResponse(responseCode = "204", description = "Quando não há nenhum usuaŕio cadastrado no banco de dados com este id",
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado com o ID fornecido",
                     content = @Content())
     })
     ResponseEntity<String> deletar(@PathVariable Integer id);

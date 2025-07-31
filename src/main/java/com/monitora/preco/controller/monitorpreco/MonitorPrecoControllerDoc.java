@@ -17,19 +17,16 @@ public interface MonitorPrecoControllerDoc {
 
     @PostMapping("/executar")
     @Operation(summary = "Executar monitoramento manual", description = """
-            Executar monitoramento manual
-            ---
-            Executar monitoramento manual dos produtos cadastrados como "ativo" no banco de dados
-            """)
+        Executa manualmente o monitoramento dos produtos ativos cadastrados no banco de dados.
+        """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quando o monitor é ativado com sucesso",
+            @ApiResponse(responseCode = "200", description = "Monitoramento manual executado com sucesso",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = UsuarioResponseDto.class)
+                            schema = @Schema(implementation = String.class)
                     )),
-            @ApiResponse(responseCode = "400", description = "Quando o corpo de requisição está incorreto",
+            @ApiResponse(responseCode = "400", description = "Corpo da requisição inválido",
                     content = @Content())
     })
     ResponseEntity<String> monitorarAgora();
-
 }

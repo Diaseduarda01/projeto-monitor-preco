@@ -95,17 +95,15 @@ public interface ProdutoControllerDoc {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar produto por id", description = """
-           Deletar produto por id
-            ---
-           Deletar produto por id no banco de dados
-           """)
+        Deleta um produto no banco de dados com base no id fornecido.
+        """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quando o produto foi deletado no banco de dados com sucesso",
+            @ApiResponse(responseCode = "200", description = "Produto deletado com sucesso",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ProdutoResponseDto.class)
+                            schema = @Schema(implementation = String.class)
                     )),
-            @ApiResponse(responseCode = "204", description = "Quando não há nenhum produto cadastrado no banco de dados com este id",
+            @ApiResponse(responseCode = "404", description = "Produto não encontrado com o ID fornecido",
                     content = @Content())
     })
     ResponseEntity<String> deletar(@PathVariable Integer id);

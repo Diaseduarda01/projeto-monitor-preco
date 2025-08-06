@@ -5,19 +5,15 @@ import com.monitora.preco.entity.Notificacao;
 import com.monitora.preco.entity.Produto;
 import com.monitora.preco.exception.naoencontrado.PrecoNaoEncontradoException;
 import com.monitora.preco.utils.LoggerUtils;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.AllArgsConstructor;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -54,42 +50,36 @@ public class MonitorService {
     }
 
     public BigDecimal buscarPreco(String url, String classe) {
-        WebDriverManager.chromedriver().browserVersion("135.0.7049.84").setup();
-        WebDriver driver = new ChromeDriver();
-
         try {
-            driver.get(url);
+            // Faz o GET com user-agent para evitar bloqueio
+            Document doc = Jsoup.connect(url)
+                    .userAgent("Mozilla/5.0")
+                    .timeout(15000)
+                    .get();
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-            List<WebElement> elementos;
+            Elements elementos;
 
             if (classe != null && !classe.isBlank()) {
                 if (classe.contains(" ")) {
                     String seletorCss = "." + classe.trim().replace(" ", ".");
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(seletorCss)));
-                    elementos = driver.findElements(By.cssSelector(seletorCss));
+                    elementos = doc.select(seletorCss);
                 } else {
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(classe)));
-                    elementos = driver.findElements(By.className(classe));
+                    elementos = doc.getElementsByClass(classe);
                 }
             } else {
-                By xpath = By.xpath("//*[contains(text(),'R$')]");
-                wait.until(ExpectedConditions.visibilityOfElementLocated(xpath));
-                elementos = driver.findElements(xpath);
+                elementos = doc.getElementsContainingOwnText("R$");
             }
 
-            for (WebElement elemento : elementos) {
-                if (elemento.isDisplayed()) {
-                    String texto = elemento.getText();
-                    if (texto.matches(".*R\\$\\s?\\d+[\\.,]?\\d*.*")) {
-                        String precoStr = texto.replaceAll("[^\\d,\\.]", "")
-                                .replace(".", "")
-                                .replace(",", ".")
-                                .trim();
+            for (Element elemento : elementos) {
+                String texto = elemento.text();
+                if (texto.matches(".*R\\$\\s?\\d+[\\.,]?\\d*.*")) {
+                    String precoStr = texto.replaceAll("[^\\d,\\.]", "")
+                            .replace(".", "")
+                            .replace(",", ".")
+                            .trim();
 
-                        LoggerUtils.info("Preço extraído com sucesso: " + precoStr);
-                        return new BigDecimal(precoStr);
-                    }
+                    LoggerUtils.info("Preço extraído com sucesso: " + precoStr);
+                    return new BigDecimal(precoStr);
                 }
             }
 
@@ -99,11 +89,9 @@ public class MonitorService {
         } catch (Exception e) {
             LoggerUtils.error("Erro ao buscar preço na URL: " + url, e);
             throw new RuntimeException("Erro ao buscar preço: " + e.getMessage(), e);
-        } finally {
-            driver.quit();
-            LoggerUtils.info("Navegador encerrado para URL: " + url);
         }
     }
+
 
     private void salvarHistorico(Produto produto, BigDecimal preco) {
         HistoricoPreco historico = new HistoricoPreco();

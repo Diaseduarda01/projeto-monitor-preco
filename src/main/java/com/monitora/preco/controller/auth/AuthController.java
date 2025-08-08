@@ -42,7 +42,7 @@ public class AuthController implements AuthControllerDoc{
                 usuario.getRole().getNome()
         );
 
-        return ResponseEntity.ok(new AuthResponseDto(token, usuario.getNome(), roleDto));
+        return ResponseEntity.ok(new AuthResponseDto(token, usuario.getNome(), usuario.getId(), roleDto));
     }
 
 
@@ -57,7 +57,7 @@ public class AuthController implements AuthControllerDoc{
                 novo.getRole().getNome()
         );
 
-        return ResponseEntity.ok(new AuthResponseDto(token, novo.getNome(), roleDto));
+        return ResponseEntity.ok(new AuthResponseDto(token, novo.getNome(), novo.getId(), roleDto));
     }
 
 

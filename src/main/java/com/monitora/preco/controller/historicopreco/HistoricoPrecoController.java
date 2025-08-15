@@ -60,12 +60,12 @@ public class HistoricoPrecoController implements HistoricoPrecoControllerDoc {
 
     @Override
     public ResponseEntity<BigDecimal> getPrecoDesejado(Integer produtoId, Integer usuarioId) {
-        return ResponseEntity.ok(service.getUltimoPreco(produtoId, usuarioId));
+        return ResponseEntity.ok(service.getPrecoDesejado(produtoId, usuarioId));
     }
 
     @Override
-    public ResponseEntity<BigDecimal> getUltimoPreco(Integer produtoId, Integer usuarioId) {
-        return ResponseEntity.ok(service.getUltimoPreco(produtoId, usuarioId));
+        public ResponseEntity<BigDecimal> getUltimoPreco(Integer produtoId, Integer usuarioId) {
+            return ResponseEntity.ok(service.getUltimoPreco(produtoId, usuarioId));
     }
 
     @Override

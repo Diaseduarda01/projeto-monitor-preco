@@ -48,7 +48,7 @@ public class HistoricoPrecoService {
     }
 
     public Integer qtdProdutoPertoDoPrecoDesejado(Integer idUsuario) {
-        BigDecimal margem = new BigDecimal("1.05");
+        BigDecimal margem = new BigDecimal("1.15");
         List<Produto> produtos = produtoRepository.findByUsuarioId(idUsuario);
 
         int contador = 0;
@@ -106,7 +106,7 @@ public class HistoricoPrecoService {
             } else if (ultimoPreco.compareTo(precoDesejado) <= 0) {
                 status = "ATINGIU";
             } else {
-                BigDecimal margem = precoDesejado.multiply(new BigDecimal("1.05"));
+                BigDecimal margem = precoDesejado.multiply(new BigDecimal("1.15"));
                 status = ultimoPreco.compareTo(margem) <= 0 ? "PERTO" : "LONGE";
             }
 
